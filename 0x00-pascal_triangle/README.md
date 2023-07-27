@@ -3,7 +3,7 @@
           
 Pascal's triangle is a mathematical pattern that looks like a triangle made of numbers. Each row in the triangle represents a set of numbers, and the numbers in each row are added together to form the numbers in the next row.        
 
-Let's take a look at how it's made:     
+It looks like the example below:          
 
 1       
 1 1       
