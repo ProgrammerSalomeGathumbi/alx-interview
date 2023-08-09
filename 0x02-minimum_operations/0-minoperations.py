@@ -11,12 +11,11 @@ def minOperations(n):
     """
     if n <= 0:
         return 0
-
-    # Initialize dp list to store minimum operations for each index
-    dp = [0] * (n + 1)
-    for i in range(2, n + 1):
-        dp[i] = i  # Initialize with maximum operations
-        for j in range(2, i):
-            if i % j == 0:
-                dp[i] = min(dp[i], dp[j] + i // j)
-    return dp[n]
+    i = 0
+    j = 2
+    while n > 1:
+        while n % j == 0:
+            i += j
+            n //= j
+        j += 1
+    return i
