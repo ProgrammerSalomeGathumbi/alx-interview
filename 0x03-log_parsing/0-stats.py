@@ -5,37 +5,56 @@
 import sys
 
 
-def print_stats(total_size, status):
+def parse_line(line):
     """
-    reads stdin line by line and computes metrics
+    Parses a log line and extracts status code and file size
+    """
+    parts = line.split()
+    if len(parts) != 9:
+        return None, None
+    try:
+        sts_code = int(parts[-2])
+        file_size = int(parts[-1])
+        return sts_code, file_size
+    except ValueError:
+        return None, None
+
+
+def print_stats(total_size, sts_codes):
+    """
+    Prints statistics for status codes and total file size
     """
     print("File size: {}".format(total_size))
-    for sts in sorted(status.keys()):
-        if status[sts] != 0:
-            print("{}: {}".format(sts, status[sts]))
+    for sts in sorted(sts_codes.keys()):
+        count = sts_codes[sts]
+        if count != 0:
+            print("{}: {}".format(sts, count))
 
 
-codes = {200: 0, 301: 0, 400: 0, 401: 0, 403: 0,
-             404: 0, 405: 0, 500: 0}
-count = 0
-size = 0
-try:
-    for line in sys.stdin:
-        if count != 0 and count % 10 == 0:
-            print_stats(size, codes)
-        parts = line.split()
-        count += 1
-        try:
-            size += int(parts[-1])
-        except ValueError:
-            pass
-        try:
-            code = int(parts[-2])
-            if code in codes:
-                codes[code] += 1
-        except ValueError:
-            pass
+def main():
+    sts_codes = {200: 0, 301: 0, 400: 0, 401: 0, 403: 0,
+                 404: 0, 405: 0, 500: 0}
+    line_count = 0
+    total_size = 0
 
-except KeyboardInterrupt:
-    print_stats(size, codes)
-    raise
+    try:
+        for line in sys.stdin:
+            sts_code, file_size = parse_line(line)
+            if sts_code is not None and file_size is not None:
+                total_size += file_size
+                if sts_code in sts_codes:
+                    sts_codes[sts_code] += 1
+
+                line_count += 1
+                if line_count % 10 == 0:
+                    print_stats(total_size, sts_codes)
+
+        print_stats(total_size, sts_codes)
+
+    except KeyboardInterrupt:
+        print_stats(total_size, sts_codes)
+        raise
+
+
+if __name__ == "__main__":
+    main()
