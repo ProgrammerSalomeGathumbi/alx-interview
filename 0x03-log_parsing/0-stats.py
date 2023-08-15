@@ -12,28 +12,29 @@ def print_stats(total_file_size, sts_code_counts):
     print("File size: {}".format(total_file_size))
     for sts_code in sorted(sts_code_counts.keys()):
         count = sts_code_counts[sts_code]
-        if count > 0:
-            print("{}: {}".format(sts_code, count))
+        if count != 0:
+            print("{:d}: {:d}".format(sts_code, count))
 
 
 total_file_size = 0
-sts_code_counts = {200: 0, 301: 0, 400: 0, 401: 0, 403: 0,
-                   404: 0, 405: 0, 500: 0}
+sts_counts = {200: 0, 301: 0, 400: 0, 401: 0, 403: 0,
+              404: 0, 405: 0, 500: 0}
 line_count = 0
 try:
-    for line_number, line in enumerate(sys.stdin, start=1):
-        ip, _, _, _, _, _, _, sts_code_str, f_size_str = line.split()
+    for line in sys.stdin:
+        if line_count != 0 and line_count % 10 == 0:
+            print_stats(sts_counts, total_file_size)
+        parts = line.split()
+        line_count = 0
         try:
-            sts_code = int(sts_code_str)
-            file_size = int(f_size_str)
+            total_file_size += int(parts[-1])
         except ValueError:
-            continue
-        total_file_size += file_size
-        sts_code_counts[sts_code] += 1
-        line_count += 1
-
-        if line_count == 10:
-            print_stats(total_file_size, sts_code_counts)
-            line_count = 0
+            pass
+        try:
+            if parts[-2] in sts_counts:
+                sts_counts[parts[-2]] += 1
+        except ValueError:
+            pass
 except KeyboardInterrupt:
-    print_stats(total_file_size, sts_code_counts)
+    print_stats(total_file_size, sts_counts)
+    raise
