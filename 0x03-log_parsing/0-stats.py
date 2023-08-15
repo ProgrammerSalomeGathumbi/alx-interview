@@ -32,6 +32,7 @@ def print_stats(total_size, sts_codes):
 
 
 def main():
+    # Dictionary to store status code counts
     sts_codes = {200: 0, 301: 0, 400: 0, 401: 0, 403: 0,
                  404: 0, 405: 0, 500: 0}
     line_count = 0
@@ -39,6 +40,7 @@ def main():
 
     try:
         for line in sys.stdin:
+            # Parse the line and extract status code and file size
             sts_code, file_size = parse_line(line)
             if sts_code is not None and file_size is not None:
                 total_size += file_size
@@ -46,12 +48,14 @@ def main():
                     sts_codes[sts_code] += 1
 
                 line_count += 1
+                # Print stats every 10 lines
                 if line_count % 10 == 0:
                     print_stats(total_size, sts_codes)
-
+        # Print final stats
         print_stats(total_size, sts_codes)
 
     except KeyboardInterrupt:
+        # Print stats in case of interruption
         print_stats(total_size, sts_codes)
         raise
 
