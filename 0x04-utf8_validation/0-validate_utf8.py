@@ -8,14 +8,21 @@ def validUTF8(data):
     """
     Determine if a given data set represents a valid UTF-8 encoding.
     """
-    try:
-        for byte in data:
-            if byte < 0 or byte > 255:
-                return False
+    b_bytes = 0
 
-        b_data = bytes(data)
-        decoded_data = b_data.decode('utf-8')
-        encoded_data = decoded_data.encode('utf-8')
-        return encoded_data == b_data
-    except UnicodeDecodeError:
-        return false
+    for byte in data:
+        if b_bytes == 0:
+            if (byte >> 5) == 0b110 or (byte >> 5) == 0b1110:
+                b_bytes = 1
+            elif (byte >> 4) == 0b1110:
+                b_bytes = 2
+            elif (byte >> 3) == 0b11110:
+                b_bytes = 3
+            elif (byte >> 7) == 0b1:
+                return False
+        else:
+            if (byte >> 6) != 0b10:
+                return False
+            b_bytes -= 1
+
+    return b_bytes == 0
