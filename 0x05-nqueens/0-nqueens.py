@@ -24,8 +24,8 @@ def solve_nqueens(N):
     def solve_util(board, col):
         nonlocal solutions
         if col >= N:
-            solutions.append([ (r, c.index(1)) 
-                             for r, c in enumerate(board)])	   
+            solutions.append([(r, c.index(1))
+                             for r, c in enumerate(board)])
             return
         for i in range(N):
             if is_safe(board, i, col, N):
@@ -43,6 +43,7 @@ def print_solutions(solutions):
     for solution in solutions:
         formatted_solution = [[r, c] for r, c in solution]
         print(formatted_solution)
+
 
 if __name__ == "__main__":
     if len(sys.argv) != 2:
