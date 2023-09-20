@@ -10,11 +10,14 @@ def makeChange(coins, total):
     """
     if total < 1:
         return 0
-    c_list = [float('inf')] * (total + 1)
-    c_list[0] = 0
-
-    for coin in coins:
-        for i in range(coin, total + 1):
-            c_list[i] = min(c_list[i], c_list[i - coin] + 1)
-
-    return c_list[total] if c_list[total] != float('inf') else -1
+    else:
+        coin = sorted(coins)
+        coin.reverse()
+        count = 0
+    for c in coin:
+        while total >= c:
+            total -= c
+            count += 1
+        if total == 0:
+            return count
+    return -1
