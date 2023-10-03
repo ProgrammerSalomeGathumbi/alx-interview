@@ -10,10 +10,11 @@ def isPrimeNumber(n):
     """
     primes = []
     primeNos = [True] * (n + 1)
-    for prime in range(2, n + 1):
-        if primeNos[prime]:
-            primeNos.append(prime)
-            for x in range(prime, n + 1, prime):
+    primeNos[0] = primeNos[1] = False	
+    for prime, is_prime in enumerate(primeNos):
+        if is_prime:
+            primes.append(prime)
+            for x in range(prime * prime, n + 1, prime):
                 primeNos[x] = False
     return primes
 
@@ -24,11 +25,13 @@ def isWinner(x, nums):
     """
     if x is None or nums is None or x == 0 or nums == []:
         return None
+	
     Maria = 0
     Ben = 0
-    for n in range(x):
-        primes = isPrimeNumber(nums[n])
-        if len(primes) == 0:
+
+    for n in nums:
+        primes = isPrimeNumber(n)
+        if len(primes) % 2 == 0:
             Ben += 1
         else:
             Maria += 1
